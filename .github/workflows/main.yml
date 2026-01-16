@@ -1,19 +1,32 @@
-debug: false
-metrics: false
+name: Build Docker Image
 
-storage:
-  type: memory
+on:
+  push:
+    branches:
+      - main
 
-server:
-  address: "0.0.0.0:8080"
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-ui:
-  title: "Uptime"
-  refresh-rate: 60s
+    permissions:
+      contents: read
+      packages: write
 
-endpoints:
-  - name: "Google"
-    url: "https://www.google.com"
-    interval: 60s
-    conditions:
-      - "[STATUS] == 200"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/gatus:latest
