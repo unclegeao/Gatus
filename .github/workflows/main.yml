@@ -1,0 +1,19 @@
+debug: false
+metrics: false
+
+storage:
+  type: memory
+
+server:
+  address: "0.0.0.0:8080"
+
+ui:
+  title: "Uptime"
+  refresh-rate: 60s
+
+endpoints:
+  - name: "Google"
+    url: "https://www.google.com"
+    interval: 60s
+    conditions:
+      - "[STATUS] == 200"
